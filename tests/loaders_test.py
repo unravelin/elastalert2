@@ -11,8 +11,12 @@ import elastalert.alerts
 import elastalert.ruletypes
 from elastalert.alerters.email import EmailAlerter
 from elastalert.config import load_conf
-from elastalert.loaders import FileRulesLoader
-from elastalert.loaders import RulesLoader
+from elastalert.loaders import (
+    FileRulesLoader,
+    RulesLoader,
+    load_rule_schema,
+)
+
 from elastalert.util import EAException
 
 
@@ -78,8 +82,8 @@ def test_import_rules():
 def test_import_import():
     rules_loader = FileRulesLoader(test_config)
     import_rule = copy.deepcopy(test_rule)
-    del(import_rule['es_host'])
-    del(import_rule['es_port'])
+    del import_rule['es_host']
+    del import_rule['es_port']
     import_rule['import'] = 'importme.ymlt'
     import_me = {
         'es_host': 'imported_host',
@@ -105,8 +109,8 @@ def test_import_import():
 def test_import_absolute_import():
     rules_loader = FileRulesLoader(test_config)
     import_rule = copy.deepcopy(test_rule)
-    del(import_rule['es_host'])
-    del(import_rule['es_port'])
+    del import_rule['es_host']
+    del import_rule['es_port']
     import_rule['import'] = '/importme.ymlt'
     import_me = {
         'es_host': 'imported_host',
@@ -131,8 +135,8 @@ def test_import_filter():
 
     rules_loader = FileRulesLoader(test_config)
     import_rule = copy.deepcopy(test_rule)
-    del(import_rule['es_host'])
-    del(import_rule['es_port'])
+    del import_rule['es_host']
+    del import_rule['es_port']
     import_rule['import'] = 'importme.ymlt'
     import_me = {
         'es_host': 'imported_host',
@@ -622,3 +626,8 @@ def test_load_yaml_imports_modified():
             'rule_file': rule_path,
         }
         assert len(rules_loader.import_rules) == 0
+
+
+def test_load_rule_schema():
+    validator = load_rule_schema()
+    validator.check_schema(validator.schema)
